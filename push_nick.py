@@ -2,10 +2,35 @@ import requests
 import json
 import configparser
 from datetime import datetime
+import os  # 新增：用于读取环境变量
 
-# 读取配置文件
-config = configparser.ConfigParser()
-config.read('config.txt')
+# 读取配置文件或环境变量
+def get_config():
+    config = configparser.ConfigParser()
+
+    # 如果 config.txt 文件存在，优先从文件中读取配置
+    if os.path.exists('config.txt'):
+        config.read('config.txt')
+    else:
+        # 如果 config.txt 文件不存在，从环境变量中读取配置
+        config['WxPusher'] = {
+            'app_token': os.getenv('WXPUSHER_APP_TOKEN'),
+            'user_id': os.getenv('WXPUSHER_USER_ID')
+        }
+        config['Weather'] = {
+            'api_key': os.getenv('WEATHER_API_KEY'),
+            'CITY': os.getenv('CITY'),
+            'LAT': os.getenv('LAT'),
+            'LON': os.getenv('LON')
+        }
+        config['Anniversary'] = {
+            'love_day': os.getenv('LOVE_DAY')
+        }
+
+    return config
+
+# 获取配置
+config = get_config()
 
 # 获取 WxPusher 配置
 app_token = config.get('WxPusher', 'app_token')
