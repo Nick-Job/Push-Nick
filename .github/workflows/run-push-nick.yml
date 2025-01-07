@@ -1,0 +1,58 @@
+name: WeChat Auto Reminder
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 每天 UTC 时间 0:00 运行（北京时间 8:00）
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  send-reminder:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 设置 Python 环境
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'  # 明确指定 Python 版本
+
+      # 3. 安装依赖
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      # 4. 动态生成 config.txt
+      - name: Generate config.txt
+        env:
+          WXPUSHER_APP_TOKEN: ${{ secrets.WXPUSHER_APP_TOKEN }}
+          WXPUSHER_USER_ID: ${{ secrets.WXPUSHER_USER_ID }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          CITY: ${{ secrets.CITY }}
+          LAT: ${{ secrets.LAT }}
+          LON: ${{ secrets.LON }}
+          LOVE_DAY: ${{ secrets.LOVE_DAY }}
+        run: |
+          cat <<EOL > config.txt
+          [WxPusher]
+          app_token = ${WXPUSHER_APP_TOKEN}
+          user_id = ${WXPUSHER_USER_ID}
+
+          [Weather]
+          api_key = ${WEATHER_API_KEY}
+          CITY = ${CITY}
+          LAT = ${LAT}
+          LON = ${LON}
+
+          [Anniversary]
+          love_day = ${LOVE_DAY}
+          EOL
+
+      # 5. 运行脚本
+      - name: Run the reminder script
+        run: |
+          python3 push_nick.py
