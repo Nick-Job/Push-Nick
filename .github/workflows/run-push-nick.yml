@@ -52,6 +52,11 @@ jobs:
           love_day = ${LOVE_DAY}
           EOL
 
+      # 4.1 打印 config.txt 内容（用于调试）
+      - name: Print config.txt
+        run: |
+          cat config.txt
+
       # 5. 运行脚本
       - name: Run the reminder script
         run: |
