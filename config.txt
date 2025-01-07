@@ -1,0 +1,12 @@
+[WxPusher]
+app_token = AT_yL7R2yuIj2U7jYoEtowahK1EfqHSd3gT
+user_id = UID_ekKiVDJu5iUrqYrAelXroyhEng1x
+
+[Weather]
+api_key = 2e415b8c1e534fbea2042ff3a738ca13
+CITY=深圳   
+LAT=22.5431
+LON=114.0579
+
+[Anniversary]
+love_day = 2024-08-18  
